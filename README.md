@@ -1,7 +1,7 @@
 C++ multithread programming
 ===========================
 
-Materials for students at NSN in Wroclaw, 10/2013
+Materials for students at NSN in Wroclaw, 02/2014
 -------------------------------------------------
 
 for questions about training - go to www.infotrainig.pl
