@@ -57,7 +57,7 @@ int main()
         {
             string msg = "Thread ";
             msg += lexical_cast<string>(i);
-            thg.emplace_back(hello, msg);
+            thg.emplace_back (hello, msg);
 //            //thread* th = new thread(hello, msg);
 //            //thg.add_thread(th);
 //            thg.create_thread( bind(hello, msg) );
