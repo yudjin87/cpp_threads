@@ -29,7 +29,8 @@ void consumer( int time)
     while(true)
     {
         boost::unique_lock<boost::mutex> lock(mtx);
-        cond.wait(lock, !boost::bind(&std::queue<int>::empty, &q));
+        //cond.wait(lock, !boost::bind(&std::queue<int>::empty, &q));
+        cond.wait(lock, [&]() { return !q.empty();});
         int msg = q.front();
         if (msg == -1)
         {
