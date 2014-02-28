@@ -7,6 +7,7 @@
 #include <map>
 #include <algorithm>
 #include "gmock/gmock.h"
+#include "threadpool.h"
 
 class EventHandler
 {
@@ -35,14 +36,17 @@ class Reactor
 {
     Demultiplexer& dmx_;
     std::map<IOService::service, std::shared_ptr<EventHandler> > handlers_;
+    ThreadPool *tp;
 
 public:
     Reactor(Demultiplexer& dmx) : dmx_(dmx)
     {
+        tp = new ThreadPool(4);
     }
 
     ~Reactor()
     {
+        delete tp;
     }
 
     void register_handler(IOService::service serv, std::shared_ptr<EventHandler> handler)
@@ -71,7 +75,8 @@ public:
         while (!dmx_.is_finished())
         {
             auto result = dmx_.get();
-            handlers_[result.service_type]->process(result.data);
+            //handlers_[result.service_type]->process(result.data);
+            tp->add_task( [=]() { handlers_[result.service_type]->process(result.data); });
         }
     }
 };

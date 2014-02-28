@@ -39,5 +39,6 @@ int main()
 {
     boost::asio::ip::tcp::resolver::query query("www.google.pl", "80");
     resolver.async_resolve(query, resolve_handler);
+    std::cout << "After launching resolver" << std::endl;
     io_service.run();
 }
