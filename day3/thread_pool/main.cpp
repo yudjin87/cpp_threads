@@ -7,7 +7,7 @@
 
 void newTask(int i)
 {
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
     std::cout << "Task " << i << " is done" <<std::endl;
 }
 
@@ -26,6 +26,5 @@ int main()
         tp.add_task( [i] () { newTask(i);} );
 
     std::future<int> res = tp.add_future_task<int>(Question);
-
-
+    std::cout << "Future resut: " << res.get() << std::endl;
 }
