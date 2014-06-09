@@ -34,6 +34,11 @@ public:
     }
 };
 
+thread launch_thread(int id)
+{
+    return thread( [] () { cout << "launched thread" << endl;});
+}
+
 int main()
 {
     cout << "Hello different things!" << endl;
@@ -42,7 +47,8 @@ int main()
     thread th2(&mutilate, ref(number));
     th1.join();
 
-    thread copy(move(th2));
+    // moving thread object
+    thread copy(move(th2));  // th2 is no longer joinable (actually is not valid)
     copy.join();
 
     thread th3( [number] () { cout << "Hello from lambda: " << number << endl;} );
@@ -54,6 +60,8 @@ int main()
     th4.join();
     cout << f.answer() << endl;
 
+    thread other = launch_thread(10); // move constructor also
+    other.join();
 
     cout << "Number = " << number << endl;
     return 0;
