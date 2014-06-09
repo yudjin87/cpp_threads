@@ -1,15 +1,24 @@
-# Compiled Object files
-*.slo
-*.lo
-*.o
+#################
+## Sphinx
+#################
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
+*.sublime-workspace
+*.sublime-project
+**/doc/_build/*
+**/.ropeproject/*
+**/build/*
+**/.build/*
+**/.idea/*
+**/_build/*
+*~
+doc/.idea*/*
+build/*
+**/CMakeLists.txt.user
+temp/*
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
+**/CMakeFiles/*
+**/CMakeCache.txt
+**/cmake_install.cmake
 **.user
 **/build
+**/*-build
