@@ -2,6 +2,7 @@
 #include <vector>
 #include <algorithm>
 #include <thread>
+#include <chrono>
 
 using namespace std;
 
@@ -14,7 +15,7 @@ using namespace std;
 template<typename It, typename T>
 T parallel_accumulate(It begin, It end, T init)
 {
-    int N = thread::hardware_concurrency();
+    int N = 4;// = thread::hardware_concurrency();
     vector<thread> threads;
     vector<T> results(N);
     size_t block_size = distance(begin, end)/N;
@@ -43,17 +44,52 @@ T parallel_accumulate(It begin, It end, T init)
 
 int main()
 {
-    const size_t BIG = 1000000;
+    const size_t BIG = 1'000'000;
     cout << "Hello World!" << endl;
-    vector<unsigned long> vec;
+    vector<unsigned long> vec1;
     for (int i = 0 ; i < BIG ; ++i)
     {
-        vec.push_back(i);
+        vec1.push_back(i);
     }
-    cout << "N of cores " << thread::hardware_concurrency() << endl;
-    cout << "Just the Sum = " << accumulate(vec.begin(), vec.end(), 0UL) << endl;
-    cout << "Parallel Sum = " << parallel_accumulate(vec.begin(), vec.end(), 0UL) << endl;
 
+    vector<unsigned long> vec2;
+    for (int i = 0 ; i < BIG ; ++i)
+    {
+        vec2.push_back(i);
+    }
+
+    cout << "N of cores " << thread::hardware_concurrency() << endl;
+
+    auto time_start = chrono::high_resolution_clock::now();
+    cout << "Just the Sum = " << accumulate(vec1.begin(), vec1.end(), 0UL) << " ";
+    auto time_end = chrono::high_resolution_clock::now();
+    cout << chrono::duration_cast<chrono::microseconds>(time_end-time_start).count();
+    cout << " um" << endl;
+
+
+    time_start = chrono::high_resolution_clock::now();
+    cout << "Parallel Sum = " << parallel_accumulate(vec2.begin(), vec2.end(), 0UL)  << " ";
+    time_end = chrono::high_resolution_clock::now();
+    cout << chrono::duration_cast<chrono::microseconds>(time_end-time_start).count();
+    cout << " um" << endl;
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
