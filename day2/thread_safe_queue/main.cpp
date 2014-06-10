@@ -13,21 +13,20 @@ mutex c_mtx;
 
 void print(const string& msg, int id, int value )
 {
-    {
-        lock_guard<mutex> clock(c_mtx);
-        cout << id << " " << msg << " " << i << endl;
-    }
+
+    lock_guard<mutex> clock(c_mtx);
+    cout << id << " " << msg << " " << value << endl;
 }
 
 void producer()
 {
-    for (int i = 1 ; i <= 100 ; ++i)
+    for (int i = 1 ; i <= 10 ; ++i)
     {
         this_thread::sleep_for(chrono::milliseconds(100));
         q.push(i);
         print("producer", 0, i);
-
     }
+    q.push(-1);
 }
 
 void consumer(int id)
@@ -36,6 +35,11 @@ void consumer(int id)
     {
         int i;
         q.pop(i);
+        if (i == -1)
+        {
+            q.push(-1);
+            return;
+        }
         print("consumer got", id, i);
     }
 }
@@ -43,11 +47,10 @@ void consumer(int id)
 int main()
 {
     cout << "Hello Prod - cons!" << endl;
-    thread pr_thread(producer);
     thread cons1_thread(consumer, 1);
     thread cons2_thread(consumer, 2);
     thread cons3_thread(consumer, 3);
-    pr_thread.join();
+    producer();
     cons1_thread.join();
     cons2_thread.join();
     cons3_thread.join();
