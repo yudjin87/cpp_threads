@@ -10,7 +10,8 @@ atomic<unsigned long> counter(0);
 void increment()
 {
     for (size_t i = 0 ; i < 20000 ; ++i)
-        ++counter; // transaction
+        counter.fetch_add(1, std::memory_order_relaxed); // optimal
+        // ++counter // suboptimal on ARMv7 and PowerPC
 }
 
 int main()
