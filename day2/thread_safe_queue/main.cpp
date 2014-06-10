@@ -11,17 +11,22 @@ thread_safe_queue<int> q;
 
 mutex c_mtx;
 
+void print(const string& msg, int id, int value )
+{
+    {
+        lock_guard<mutex> clock(c_mtx);
+        cout << id << " " << msg << " " << i << endl;
+    }
+}
+
 void producer()
 {
     for (int i = 1 ; i <= 100 ; ++i)
     {
         this_thread::sleep_for(chrono::milliseconds(100));
         q.push(i);
+        print("producer", 0, i);
 
-        {
-            lock_guard<mutex> clock(c_mtx);
-            cout << "produced " << i << endl;
-        }
     }
 }
 
@@ -31,12 +36,7 @@ void consumer(int id)
     {
         int i;
         q.pop(i);
-
-        {
-            lock_guard<mutex> clock(c_mtx);
-            cout << "cons " << id << " got: " << i << endl;
-        }
-
+        print("consumer got", id, i);
     }
 }
 
