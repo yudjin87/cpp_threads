@@ -8,6 +8,11 @@ void hello()
     cout << "hello from function" << endl;
 }
 
+int answer()
+{
+    return 42;
+}
+
 struct task_struct{
     void operator()()
     {
@@ -23,7 +28,8 @@ int main()
     tp.add_task( [] () { cout << "hello from lambda" << endl; });
     task_struct t;
     tp.add_task(t);
-    cout << "Hello World!" << endl;
+    future<int> res = tp.add_f_task<int>(answer);
+    cout << "Answer is " << res.get() << endl;
     return 0;
 }
 

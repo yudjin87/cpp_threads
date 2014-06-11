@@ -13,27 +13,41 @@ using namespace std;
 class ActiveObject
 {
     thread_safe_queue<task_t> q;
+    thread servant;
+
 public:
     ActiveObject()
     {
-
+        servant = thread([this] ()
+        {
+           for(;;)
+           {
+               task_t task;
+               q.pop(task);
+               if (!task)
+                   return;
+               task();
+           }
+        });
     }
 
     ~ActiveObject()
     {
-
+        q.push(nullptr);
+        servant.join();
     }
 
     void send(task_t task)
     {
-
+        q.push(task);
     }
 };
 
 class Logger
 {
     ofstream fout;
-    mutex mtx;
+    ActiveObject proxy;
+
 public:
     Logger(const string& fname)
     {
@@ -42,14 +56,15 @@ public:
 
     ~Logger()
     {
-        fout.close();
+        proxy.send( [this] () { fout.close(); } );
     }
 
     void log(const string& message)
     {
-        lock_guard<mutex> l(mtx);
-        this_thread::sleep_for(chrono::milliseconds(10));
-        fout << message << endl;
+        proxy.send( [this, message] () {
+            this_thread::sleep_for(chrono::milliseconds(10));
+            fout << message << endl;
+        } );
     }
 };
 
@@ -70,6 +85,7 @@ int main()
         threads.emplace_back(log_id, ref(logger), i);
 
     for (thread& th : threads) th.join();
+    cout << "finished logging" << endl;
     return 0;
 }
 

@@ -5,6 +5,7 @@
 #include <vector>
 #include <thread>
 #include <pthread.h>
+#include <future>
 
 typedef std::function<void()> task_t;
 
@@ -44,6 +45,16 @@ public:
     {
         q.push(task);
     }
+
+    template<typename T, typename F>
+    std::future<T> add_f_task(F fun)
+    {
+        auto task = std::make_shared<std::packaged_task<T()>>(fun);
+        std::future<T> res = task->get_future();
+        q.push([task] () { (*task)();} );
+        return res;
+    }
+
 };
 
 #endif // THREAD_POOL_H
