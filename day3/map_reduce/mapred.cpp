@@ -70,15 +70,15 @@ class ReduceFileSize
             output_queue_.pop(size);
             if (size == -1)
             {
-                stopper += 1;
+                ++stopper;
             }
             else
-            {
+            {                
                 total_size += size;
+                //std::cout << total_size << std::endl;
                 //std::cout << suma << std::endl;
             }
         }
-
         promise_.set_value(total_size);
     }
 
@@ -112,6 +112,7 @@ public:
         return promise_.get_future();
     }
 };
+
 int main()
 {
     ReduceFileSize reducer1("/home/leszek", ".cpp");
